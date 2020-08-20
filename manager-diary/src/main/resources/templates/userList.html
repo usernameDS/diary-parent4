@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>管理员信息</title>
+    <link rel="stylesheet" th:href="@{/lib/bootstrap-3.3.5-dist/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/stuInfor.css}">
+    <link rel="stylesheet" th:href="@{/font/iconfont.css}">
+</head>
+<body>
+<!-- 内容区域 -->
+<div class="stuInfor_content container-fluid">
+    <div class="row">
+        <!-- 搜索学生栏 -->
+        <div class="row">
+            <div class="stuInfor_searchBar col-md-12 col-lg-12">
+                <form th:action="@{/manager.html}">
+                    <input type="text" class="stuInfor_inputText" placeholder="输入帐号进行查询" name="account">
+                    <button type="submit" class="btn btn-success">搜索</button>
+                </form>
+            </div>
+        </div>
+        <!-- 批量删除及添加学生 -->
+        <div class="row">
+            <!-- 批量删除及添加学生按钮 -->
+            <div class="stuInfor_delateAdd col-md-3 col-lg-3">
+                <button id="delBatch" type="button" class="stuInfo_delateBtn1 iconfont icon-shanchu btn btn-danger" data-toggle="modal"
+                        data-target="#stuInfor_delateAllStuModal1">批量删除
+                </button>
+                <button type="button" class="stuInfo_addBtn iconfont icon-icon-test btn btn-info" data-toggle="modal"
+                        data-target="#stuInfor_addStuModal">添加管理员
+                </button>
+            </div>
+            <div class="col-md-6 col-lg-6"></div>
+            <!-- 显示学生总数 -->
+            <div class="stuInfor_stuNumber col-md-3 col-lg-3">
+                <!--                <span class="stuInfor_stuNumberSpan">共有数据：<strong class="stuInfor__stuNumberStrong"></strong> 条</span>-->
+                <span class="stuInfor_stuNumberSpan">共有数据：[[${result.data.getPages()}]] 条</span>
+                <!--                    <div id="export">导出</div>-->
+            </div>
+
+        </div>
+        <!-- 显示学生基本信息 -->
+        <div class="row">
+            <div class="stuInfor_table col-md-12 col-lg-12">
+                <table id="stuInfor_mytable1" class="table table-hover table-bordered table-striped">
+                    <thead id="stuInfor_thead1">
+                    <tr>
+                        <th><input id="checkAll" type="checkbox" value=''/></th>
+                        <th>帐号</th>
+                        <th>姓名</th>
+                        <th>年龄</th>
+                        <th>性别</th>
+                        <th>邮箱</th>
+                        <th>手机</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="pageM : ${result.data.records}">
+                        <td><input class="itemBox" type="checkbox" th:value="${pageM.id}"/></td>
+                        <td th:text="${pageM.account}"></td>
+                        <td th:text="${pageM.name}"></td>
+                        <td th:text="${pageM.age}"></td>
+                        <td th:text="${pageM.gender} == 0 ? '男' : '女'"></td>
+                        <td th:text="${pageM.email}"></td>
+                        <td th:text="${pageM.phone}"></td>
+                        <td th:text="${#calendars.format(pageM.createDate,'yyyy-MM-dd')}"></td>
+                        <td class="tdOperation">
+                            <button th:update_id="${pageM.id}" class="btn btn-primary btn-xs updateBtn" type="button"><i
+                                    class=" glyphicon glyphicon-pencil"></i></button>
+                            <button th:data_id="${pageM.id}" type="button"
+                                    class="btn btn-danger btn-xs delBtn"><i
+                                    class=" glyphicon glyphicon-remove"></i></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <tfoot>
+                <!-- 显示页数 -->
+                <tr>
+                    <td colspan="6" align="center">
+                        <ul class="pagination">
+                            <li><a th:href="@{/manager.html(pageNum=1,account=${param.account})}">首页</a></li>
+                            <li><a th:href="@{/manager.html(pageNum=${result.data.current-1},account=${param.account})}"
+                                   th:if="${result.data.current-1} > 0">上一页</a></li>
+                            <li><a th:href="@{/manager.html(pageNum=${result.data.current-3},account=${param.account})}"
+                                   th:text="${result.data.current-3}" th:if="${result.data.current-3} > 0"></a></li>
+                            <li><a th:href="@{/manager.html(pageNum=${result.data.current-2},account=${param.account})}"
+                                   th:text="${result.data.current-2}" th:if="${result.data.current-2} > 0"></a></li>
+                            <li><a th:href="@{/manager.html(pageNum=${result.data.current-1},account=${param.account})}"
+                                   th:text="${result.data.current-1}" th:if="${result.data.current-1} > 0"></a></li>
+                            <li class="active"><a disabled="disabled" th:text="${result.data.current}"></a></li>
+                            <li><a th:href="@{/manager.html(pageNum=${result.data.current+1},account=${param.account})}"
+                                   th:text="${result.data.current+1}"
+                                   th:if="${result.data.current+1 <= result.data.getPages()}"></a></li>
+                            <li><a th:href="@{/manager.html(pageNum=${result.data.current+2},account=${param.account})}"
+                                   th:text="${result.data.current+2}"
+                                   th:if="${result.data.current+2 <= result.data.getPages()}"></a></li>
+                            <li><a th:href="@{/manager.html(pageNum=${result.data.current+3},account=${param.account})}"
+                                   th:text="${result.data.current+3}"
+                                   th:if="${result.data.current+3 <= result.data.getPages()}"></a></li>
+                            <li><a th:href="@{/manager.html(pageNum=${result.data.current+1},account=${param.account})}"
+                                   th:if="${result.data.current+1 <= result.data.getPages()}">下一页</a></li>
+                            <li>
+                                <a th:href="@{/manager.html(pageNum=${result.data.getPages()},account=${param.account})}">尾页</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                </tfoot>
+            </div>
+        </div>
+        <!-- 显示页数 -->
+        <div class="stuInfor_pages row">
+            <div class="stuInfor_pageNumCounts col-lg-12">
+
+            </div>
+        </div>
+    </div>
+    <!-- 导出数据 -->
+    <div id="exportTable">
+        <div class="col-md-12 col-lg-12">
+            <table id="stuInfor_exportTable" class="table table-hover table-bordered table-striped">
+                <thead id="stuInfor_exportThead">
+                <tr>
+
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<!-- 批量删除学生 -->
+<!-- Modal -->
+<div class="modal fade" id="stuInfor_delateAllStuModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="stuInfor_delateAllStu_tittle modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="stuInfor_delateAllStu_tab1">是否需要批量删除？</h4>
+                </div>
+                <div class="stuInfor_delateAllStu_btn stuInfor_addStu modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="stuInfor_deleteBatches" class="btn btn-primary" data-dismiss="modal">确认
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 单独删除学生或作退学处理 -->
+<!-- Modal -->
+<div class="modal fade" id="stuInfor_delateStuModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content1 modal-content">
+                <div class="stuInfor_delateAllStu_tittle modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="stuInfor_delateAllStu_tab2">是否删除？</h4>
+                </div>
+                <div class="stuInfor_delateAllStu_btn stuInfor_addStu modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="stuInfor_delete btn btn-primary" data-dismiss="modal">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 转班处理 -->
+<!-- Modal -->
+<div class="modal fade" id="stuInfor_changeClassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="stuInfor_changeClass_modif modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">转班管理</h4>
+            </div>
+            <div class="modal-body row">
+                <div class="stuInfor_addStu row">
+                    <div class="col-md-12 col-lg-12">
+                        请选择要转入的班级：
+                        <select class="stuInfor_changeClass_select" name="" id="">
+                            <option value="changClass" selected disabled>请选择班级</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="stuInfor_changeClass_btnAll stuInfor_addStu modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="stuInfor_changeClass_btn btn btn-primary" data-dismiss="modal">确认
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 添加学生信息 -->
+<!--上传头像-->
+<form id="submitPicBtn" th:action="@{/submitPic.do}" method="post">
+    <input style="display: none" type="file" name="file" id="fileValue">
+</form>
+<!-- Modal -->
+<div class="modal fade" id="stuInfor_addStuModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="stuInfor_ViewDetails_tittle modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel1">添加管理员信息</h4>
+            </div>
+            <!--添加管理员-->
+            <form id="insertBtnForm" th:action="@{/insertManager.do}" method="post">
+                <div class="stuInfor_ViewDetails_content modal-body row">
+                    <div class="row">
+                        <div class="stuInfor_view_headPortrait_col col-md-6 col-lg-6">
+                            <div style="margin:0 auto" class="stuInfor_view_headPortrait">
+                                <img disabled class="stuInfor_add_headPortraitImg stuInfor_view_headPortraitImg"
+                                     th:src="@{/images/stuInfor_images/add_stuImg.png}" alt="">
+                                <input type="text" id="headPicId" name="headPic" style="display: none">
+                            </div>
+                            <br>
+                            <center>
+                                <button id="selectHPicBtn" type="button" class=" btn btn-success">选择头像</button>
+                            </center>
+                        </div>
+                        <div class="stuInfor_view_headPortrait_col2 col-md-6 col-lg-6">
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">帐号<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="account" type="text"/>
+                                </div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">密码<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="password" type="password"/>
+                                </div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">姓名<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="name" type="text"/>
+                                </div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">性别<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input type="radio" name="gender" value="0">男</input>&ensp;&ensp;
+                                    <input checked type="radio" name="gender" value="1">女</input>
+                                </div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">年龄<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="age" type="text"/></div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">邮箱<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="email" type="email"/></div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">手机<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="phone" type="text"/></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stuInfor_addStu_btn stuInfor_addStu modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" id="submitInsertBtn" class=" btn btn-primary" data-dismiss="modal">确认</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 查看学生详细信息 -->
+<!-- Modal -->
+<div class="modal fade" id="stuInfor_ViewDetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="stuInfor_ViewDetails_tittle modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel2">学生详细信息</h4>
+            </div>
+            <div class="stuInfor_ViewDetails_content modal-body row">
+                <div class="row">
+                    <div class="stuInfor_view_headPortrait_col col-md-6 col-lg-6">
+                        <div class="stuInfor_view_headPortrait">
+                            <img class="stuInfor_view_headPortraitImg" src="../images/stuInfor_images/stuImg01.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                    <div class="stuInfor_view_headPortrait_col2 col-md-6 col-lg-6">
+                        <div class="stuInfor_infoComm row">
+                            <div class="stuInfor_infoComm2 col-md-4 col-lg-4">姓名</div>
+                            <div class="stuInfor_infoInputComm col-md-8 col-lg-8"><input
+                                    class="stuInfor_stuName stuInfor_addStu_inputCo2 stuInfor_addStu_inputCom"
+                                    type="text" disabled="true"/></div>
+                        </div>
+                        <div class="stuInfor_infoComm row">
+                            <div class="stuInfor_infoComm2 col-md-4 col-lg-4">性别</div>
+                            <div class="stuInfor_infoInputComm col-md-8 col-lg-8"><input
+                                    class="stuInfor_stuSex stuInfor_addStu_inputCo2 stuInfor_addStu_inputCom"
+                                    type="text" disabled="true"/></div>
+                        </div>
+                        <div class="stuInfor_infoComm row">
+                            <div class="stuInfor_infoComm2 col-md-4 col-lg-4">年龄</div>
+                            <div class="stuInfor_infoInputComm col-md-8 col-lg-8"><input
+                                    class="stuInfor_stuAge stuInfor_addStu_inputCo2 stuInfor_addStu_inputCom"
+                                    type="text" disabled="true"/></div>
+                        </div>
+                        <div class="stuInfor_infoComm row">
+                            <div class="stuInfor_infoComm2 col-md-4 col-lg-4">所属班级</div>
+                            <div class="stuInfor_infoInputComm col-md-8 col-lg-8"><input
+                                    class="stuInfor_stuGrade stuInfor_addStu_inputCo2 stuInfor_addStu_inputCom"
+                                    type="text" disabled="true"/></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">学 号</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_stuId stuInfor_addStu_inputCom" type="text"
+                                                          disabled="true"></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">出生日期</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_stuBridth stuInfor_addStu_inputCom"
+                                                          type="text" disabled="true"></div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">班级老师</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_teacherName stuInfor_addStu_inputCom"
+                                                          type="text" disabled="true"></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">入园时间</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_stuIntime stuInfor_addStu_inputCom"
+                                                          type="text" disabled="true"></div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">家长姓名</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_praentName stuInfor_addStu_inputCom"
+                                                          type="text" disabled="true"></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-4 col-lg-2">关系</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_relation stuInfor_addStu_inputCom" type="text"
+                                                          disabled="true"></div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">家长电话</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_parentPhone stuInfor_addStu_inputCom"
+                                                          type="text" disabled="true"></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">家长邮箱</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_parentEmial stuInfor_addStu_inputCom"
+                                                          type="text" disabled="true"></div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">家庭住址</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_address stuInfor_addStu_inputCom" type="text"
+                                                          disabled="true"></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">学籍状态</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_studentStatus stuInfor_addStu_inputCom"
+                                                          type="text" disabled="true"></div>
+                </div>
+            </div>
+            <div class="stuInfor_addStu_btn stuInfor_addStu modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 编辑学生信息 -->
+<!-- Modal -->
+<div class="modal fade" id="stuInfor_editStuInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="stuInfor_ViewDetails_tittle modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel3">编辑学生信息</h4>
+            </div>
+            <div class="stuInfor_ViewDetails_content modal-body row">
+                <div class="row">
+                    <div class="stuInfor_view_headPortrait_col col-md-6 col-lg-6">
+                        <div class="stuInfor_view_headPortrait">
+                            <img class="stuInfor_add_headPortraitImg stuInfor_view_headPortraitImg"
+                                 src="../images/stuInfor_images/add_stuImg.png" alt="">
+                            <input type="file" id="chooseImage_edit" name="file">
+                        </div>
+                    </div>
+                    <div class="stuInfor_view_headPortrait_col2 col-md-6 col-lg-6">
+                        <div class="stuInfor_infoComm row">
+                            <div class="stuInfor_infoComm2 col-md-4 col-lg-4">姓名<i
+                                    class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                            <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                <input class="stuInfor_stuName2 stuInfor_addStu_inputCo2 stuInfor_addStu_inputCom"
+                                       type="text" disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="stuInfor_infoComm row">
+                            <div class="stuInfor_infoComm2 col-md-4 col-lg-4">性别<i
+                                    class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                            <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                <input class="stuInfor_stuSex2 stuInfor_addStu_inputCo2 stuInfor_addStu_inputCom"
+                                       type="text" disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="stuInfor_infoComm row">
+                            <div class="stuInfor_infoComm2 col-md-4 col-lg-4">年龄</div>
+                            <div class="stuInfor_infoInputComm col-md-8 col-lg-8"><input
+                                    class="stuInfor_stuAge2 stuInfor_addStu_inputCo2 stuInfor_addStu_inputCom"
+                                    type="text"/></div>
+                        </div>
+                        <div class="stuInfor_infoComm row">
+                            <div class="stuInfor_infoComm2 col-md-4 col-lg-4">所属班级<i
+                                    class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                            <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                <input class="stuInfor_stuGrade2 stuInfor_addStu_inputCo2 stuInfor_addStu_inputCom"
+                                       type="text" disabled="true"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">学 号<i
+                            class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_stuId2 stuInfor_addStu_inputCom" type="text"
+                                                          disabled="true"/></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">出生日期<i
+                            class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                    <div class="col-md-4 col-lg-4"><input id="stuInfor_stuBridth"
+                                                          class="stuInfor_stuBridth2 stuInfor_addStu_inputCom"
+                                                          type="text" disabled="true"/></div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">班级老师<i
+                            class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_teacherName2 stuInfor_addStu_inputCom"
+                                                          type="text"/></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">入园时间<i
+                            class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                    <div class="col-md-4 col-lg-4"><input id="stuInfor_stuIntime"
+                                                          class="stuInfor_stuIntime2 stuInfor_addStu_inputCom"
+                                                          type="text" disabled="true"/></div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">家长姓名<i
+                            class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_praentName2 stuInfor_addStu_inputCom"
+                                                          type="text"/></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-4 col-lg-2">关系<i
+                            class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_relation2 stuInfor_addStu_inputCom"
+                                                          type="text"/></div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">家长电话<i
+                            class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_parentPhone2 stuInfor_addStu_inputCom"
+                                                          type="text"/></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">家长邮箱</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_parentEmial2 stuInfor_addStu_inputCom"
+                                                          type="text"/></div>
+                </div>
+                <div class="stuInfor_addStu row">
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">家庭住址</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_address2 stuInfor_addStu_inputCom"
+                                                          type="text"/></div>
+                    <div class="stuInfor_addStu_col2 stuInfor_addStu_col col-md-2 col-lg-2">学籍状态</div>
+                    <div class="col-md-4 col-lg-4"><input class="stuInfor_studentStatus2 stuInfor_addStu_inputCom"
+                                                          type="text" placeholder="填写true/flase"/></div>
+                </div>
+            </div>
+            <div class="stuInfor_addStu_btn stuInfor_addStu modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="stuInfor_editStudent btn btn-primary" data-dismiss="modal">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 编辑学生信息 -->
+<!--上传头像-->
+<form id="submitPicBtn2" th:action="@{/submitPic.do}" method="post">
+    <input style="display: none" type="file" name="file" id="fileValue2">
+</form>
+<!-- Modal -->
+<div class="modal fade" id="updateManagerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="stuInfor_ViewDetails_tittle modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel4">修改管理员信息</h4>
+            </div>
+            <!--添加管理员-->
+            <form id="updateBtnForm" th:action="@{/updateManager.do}" method="post">
+                <div class="stuInfor_ViewDetails_content modal-body row">
+                    <div class="row">
+                        <div class="stuInfor_view_headPortrait_col col-md-6 col-lg-6">
+                            <div style="margin:0 auto" class="stuInfor_view_headPortrait">
+                                <img id="imgId" class="stuInfor_add_headPortraitImg stuInfor_view_headPortraitImg"
+                                     th:src="@{/images/stuInfor_images/add_stuImg.png}" alt="">
+                                <input type="text" id="headPicId2" name="headPic" style="display: none">
+                            </div>
+                            <br>
+                            <center>
+                                <button id="selectHPicBtn2" type="button" class=" btn btn-success">修改头像</button>
+                            </center>
+                        </div>
+                        <div class="stuInfor_view_headPortrait_col2 col-md-6 col-lg-6">
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">帐号<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input disabled name="account" type="text" id="account"/>
+                                </div>
+                            </div>
+                            <input type="text" name="id" id="managerId" style="display: none">
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">姓名<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="name" type="text" id="name"/>
+                                </div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">性别<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input  id="gender1" type="radio" name="gender" value="0">男</input>&ensp;&ensp;
+                                    <input  id="gender2" type="radio" name="gender" value="1">女</input>
+                                </div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">年龄<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="age" type="text" id="age"/></div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">邮箱<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="email" type="email" id="email"/></div>
+                            </div>
+                            <div class="stuInfor_infoComm row"></div>
+                            <div class="stuInfor_infoComm row">
+                                <div class="stuInfor_infoComm2 col-md-4 col-lg-4">手机<i
+                                        class="stuInfor_addStu_xing iconfont icon-xinghao"></i></div>
+                                <div class="stuInfor_infoInputComm col-md-8 col-lg-8">
+                                    <input name="phone" type="text" id="phone"/></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stuInfor_addStu_btn stuInfor_addStu modal-footer">
+                    <button type="button" id="colseUpdateBtn" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" id="submitUpdateBtn" class=" btn btn-primary" data-dismiss="modal">确认</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/lib/bootstrap-3.3.5-dist/js/jquery-1.11.3.js}"></script>
+<script th:src="@{/jquery/jquery-form.js}"></script>
+<script th:src="@{/layer/layer.js}"></script>
+<script th:src="@{/lib/bootstrap-3.3.5-dist/js/bootstrap.js}"></script>
+<!--<script th:src="@{/js/DATE_index.js}"></script>-->
+<script th:src="@{/lib/date/laydate.dev.js}"></script>
+<script th:src="@{/lib/jquery-table2excel-master/src/jquery.table2excel.js}"></script>
+<script th:src="@{/js/stuInfor.js}"></script>
+
+<script>
+    $(function () {
+        //批量删除
+        $("#delBatch").click(function () {
+            //1、获取到选中的复选框们吧
+            //遍历前面选择的元素
+            var ids="";
+            $(".itemBox:checked").each(function (index,element) {
+                //拼接字符串，将这些要删除的id拼接起来，使用，分割
+                ids+=$(element).val()+",";
+            });
+            //截取掉最后一个，
+            //2、拼接参数
+            ids=ids.substr(0,ids.length-1);
+            layer.msg('你确定要删除吗？', {
+                time: 0 //不自动关闭
+                , btn: ['确定', '取消']
+                , yes: function (index) {
+                    //进行异步删除
+                    layer.close(index);
+                    //3、发起异步请求，进行批量删除    => 后端应该提供一个批量删除的方法
+                    $.ajax({
+                        url: "[[@{/delAll.do}]]",
+                        method: "post",
+                        data: {"ids": ids},
+                        dataType: "json",
+                        success:function (result) {
+                            //4、回显，刷新页面
+                            if(result.code=="SUCCESS"){
+                                //回显结果
+                                layer.msg('删除成功', {
+                                    icon: 6
+                                },function(){
+                                    location.href="[[@{/manager.html}]]";
+                                });
+                            }else{
+                                layer.msg('删除失败', {
+                                    icon: 6
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        //绑定全选，全不选操作
+        //checkAll上面的那个复选框
+        $("#checkAll").click(function() {
+            $(".itemBox").prop("checked",this.checked);//,this.checked  上面的那个复选框的选中状态
+        });
+
+        //通过id删除
+        $(".delBtn").click(function () {
+            var data_id = $(this).attr("data_id");
+            console.log(data_id);
+            //提示是否删除
+            layer.msg('你确定要删除吗？', {
+                time: 0 //不自动关闭
+                , btn: ['确定', '取消']
+                , yes: function (index) {
+                    //进行异步删除
+                    layer.close(index);
+                    //异步请求
+                    $.ajax({
+                        type: "POST",
+                        url: "[[@{/delByManagerId.do}]]",
+                        data: {"id": data_id},//提交的数据
+                        dataType: "json",
+                        success: function (result) {
+                            if(result.code=="SUCCESS"){
+                                //回显结果
+                                layer.msg('删除成功', {
+                                    icon: 6
+                                },function(){
+                                    location.href="[[@{/manager.html}]]";
+                                });
+                            }else{
+                                layer.msg('删除失败', {
+                                    icon: 6
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        //为修改按钮绑定事件
+        $("#submitUpdateBtn").click(function () {
+            $("#updateBtnForm").ajaxSubmit(function (result) {
+                if (result.code == "SUCCESS") {
+                    layer.msg('修改成功', {
+                        icon: 6
+                    }, function () {
+                        //隐藏模态框
+                        $("#updateManagerModal").modal("hide");
+                        //清空模态框
+                        $("#account").val("");
+                        $("#name").val("");
+                        $("#email").val("");
+                        $("#age").val("");
+                        $("#phone").val("");
+                        $("#gender1").val("");
+                        $("#gender2").val("");
+                        $("#managerId").val("");
+                        //刷新页面
+                        location.href = "[[@{/manager.html}]]";
+                    });
+                } else {
+                    layer.msg('修改失败!', {
+                        icon: 6
+                    });
+                }
+            });
+        });
+
+        //点击关闭按钮清空模态框
+        $("#colseUpdateBtn").click(function () {
+            //清空模态框
+            $("#account").val("");
+            $("#name").val("");
+            $("#email").val("");
+            $("#age").val("");
+            $("#phone").val("");
+            $("#gender1").val("");
+            $("#gender2").val("");
+            $("#managerId").val("");
+        });
+
+        //修改信息
+        $(".updateBtn").click(function () {
+            var update_id = $(this).attr("update_id");
+            console.log(update_id);
+            //异步请求
+            $.ajax({
+                type: "GET",
+                url: "[[@{/findByManagerId.do}]]",
+                data: {"id": update_id},//提交的数据
+                dataType: "json",
+                success: function (result) {
+                    //显示模态框
+                    $("#updateManagerModal").modal("show");
+                    //回显
+                    $("#account").val(result.data.account);
+                    $("#managerId").val(update_id);
+                    $("#name").val(result.data.name);
+                    $("#email").val(result.data.email);
+                    $("#age").val(result.data.age);
+                    $("#phone").val(result.data.phone);
+                    //性别当选框回显
+                    $("input[name=gender][value="+result.data.gender+"]").attr("checked",true);
+                    //显示图片
+                    $('.stuInfor_add_headPortraitImg').attr('src', "E:\\uploadFile" + result.data.headPic);
+                }
+            });
+        });
+
+        //修改头像
+        $("#selectHPicBtn2").click(function () {
+            $("#fileValue2").click();
+        });
+        $("#fileValue2").change(function () {
+            var a = $("#fileValue2").val();
+            console.log("a:" + a);
+            $("#submitPicBtn2").ajaxSubmit(function (result) {
+                $("#headPicId2").val(result.data);
+            });
+        });
+        //显示头像图片
+        $("#fileValue2").on('change', function () {
+            var filePath = $(this).val(),         //获取到input的value，里面是文件的路径
+                fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase(),
+                src = window.URL.createObjectURL(this.files[0]); //转成可以在本地预览的格式
+            //检查是否是图片
+            if (!fileFormat.match(/.png|.jpg|.jpeg/)) {
+                alert('上传错误,文件格式必须为：png/jpg/jpeg');
+                return;
+            }
+            //显示图片
+            $('.stuInfor_add_headPortraitImg').attr('src', src);
+        });
+
+
+        //为添加管理员模态框提交绑定事件
+        $("#submitInsertBtn").click(function () {
+            $("#insertBtnForm").ajaxSubmit(function (result) {
+                if (result.code == "SUCCESS") {
+                    layer.msg('添加成功', {
+                        icon: 6
+                    }, function () {
+                        location.href = "[[@{/manager.html}]]";
+                    });
+                } else {
+                    layer.msg('添加失败!  该帐号可能已存在！请重试', {
+                        icon: 6
+                    });
+                }
+            });
+        });
+
+
+        //为添加管理员上传头 像绑定事件
+        $("#selectHPicBtn").click(function () {
+            $("#fileValue").click();
+        });
+        $("#fileValue").change(function () {
+            var fileValue = $("#fileValue").val();
+            $("#submitPicBtn").ajaxSubmit(function (result) {
+                console.log(result.data);
+                $("#headPicId").val(result.data);
+            });
+        });
+
+        //显示头像图片
+        $("#fileValue").on('change', function () {
+            var filePath = $(this).val(),         //获取到input的value，里面是文件的路径
+                fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase(),
+                src = window.URL.createObjectURL(this.files[0]); //转成可以在本地预览的格式
+            //检查是否是图片
+            if (!fileFormat.match(/.png|.jpg|.jpeg/)) {
+                alert('上传错误,文件格式必须为：png/jpg/jpeg');
+                return;
+            }
+            //显示图片
+            $('.stuInfor_add_headPortraitImg').attr('src', src);
+        });
+
+    });
+</script>
+</body>
+</html>

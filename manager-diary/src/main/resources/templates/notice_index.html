@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!--设置mate标签-->
+    <!--强制设置ie浏览器使用edge模式-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--缩放按照1:1缩放-->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>公告</title>
+    <link rel="stylesheet" th:href="@{/lib/bootstrap-3.3.5-dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/font/iconfont.css}">
+    <style>
+        @import "/css/notice_style.css";
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="notice_input">
+                <textarea name="" id="notice_text" placeholder="请输入公告内容"></textarea>
+                <div id="notice_type">
+                    <i class="iconfont icon-biaoti"></i>
+                    <i class="iconfont icon-bold"></i>
+                    <i class="iconfont icon-chakanzhaopian"><input type="file" id="notice_file" value=""/></i>
+                    <span id="notice_file_img"></span>
+                    <span id="notice_count">0/140</span>
+                    <button id="notice_announce">发布公告</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <ul class="notice_myUl clear">
+                <li>
+                    <div class="img"><img th:src="@{/images/notice_images/timg.jpg}" alt=""></div>
+                    <a href="#">园区公告 <i class="iconfont icon-notice"></i></a>
+                    <div id="notice_public_content" class="notice_content">
+
+                    </div>
+                </li>
+                <li>
+                    <div class="img"><img th:src="@{/images/notice_images/timg.jpg}" alt=""></div>
+                    <a href="#">已发公告 <i class="iconfont icon-notice"></i></a>
+                    <div id="notice_select_issue">
+                        <input type="text" placeholder="请输入查看的公告" id="notice_issue_text">
+                        <input type="button" value="查询" id="notice_issue_button">
+                    </div>
+                    <div id="notice_issue_content" class="notice_content">
+
+                   </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script th:src="@{/lib/bootstrap-3.3.5-dist/js/jquery-1.11.3.js}"></script>
+    <script th:src="@{/lib/bootstrap-3.3.5-dist/js/bootstrap.js}"></script>
+<!--    <script th:src="@{/js/DATE_index.js}"></script>-->
+<!--    <script th:src="@{/js/notice.js}"></script>-->
+
+<script>
+    $(function () {
+
+    });
+
+
+
+
+    var nitoce_head_edit_count=0;
+    var nitoce_bold_edit_count=0;
+    //点击标题按钮
+    $(".icon-biaoti").on("click",function () {
+        nitoce_head_edit_count++;
+        if(nitoce_head_edit_count%2){
+            $(this).parent().prev().css("font-size","18px");
+            $(this).css("background-color" ,"#eee");
+        }else{
+            $(this).parent().prev().css("font-size","14px");
+            $(this).css("background-color" ,"white");
+        }
+    });
+    //点击加粗按钮
+    $(".icon-bold").on("click",function () {
+        nitoce_bold_edit_count++;
+        if(nitoce_bold_edit_count%2){
+            $(this).parent().prev().css("font-weight","600");
+            $(this).css("background-color" ,"#eee");
+        }else{
+            $(this).parent().prev().css("font-weight","500");
+            $(this).css("background-color" ,"white");
+        }
+    });
+    //点击图片按钮
+    $('.icon-chakanzhaopian').on('change',"input",function( e ){
+        //获取文件名
+        let notice_file_name=e.currentTarget.files[0].name;
+        $(this).parent().next().html(notice_file_name)
+        $(this).parent().next().css("display","inline-block")
+    });
+
+    //获取输入框文本数量
+    $("#notice_text").on("keyup",function (e) {
+        if($(this).val().length<=140){
+            $(this).next().children("#notice_count").html($(this).val().length+"/140")
+        }
+    });
+
+</script>
+</body>
+</html>
