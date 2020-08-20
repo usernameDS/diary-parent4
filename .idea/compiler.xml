@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="diary-eureka" />
+        <module name="diary-common" />
+        <module name="diary-redis-provider" />
+        <module name="diary-database-provider" />
+        <module name="diary-web" />
+        <module name="manager-diary" />
+        <module name="diary-photo-manager" />
+        <module name="diary-member-manager" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="diary-common" target="1.8" />
+      <module name="diary-database-provider" target="1.8" />
+      <module name="diary-eureka" target="1.8" />
+      <module name="diary-member-manager" target="1.8" />
+      <module name="diary-parent" target="1.8" />
+      <module name="diary-photo-manager" target="1.8" />
+      <module name="diary-redis-provider" target="1.8" />
+      <module name="diary-web" target="1.8" />
+      <module name="manager-diary" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

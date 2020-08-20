@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/diary-common/diary-common.iml" filepath="$PROJECT_DIR$/diary-common/diary-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diary-database-provider/diary-database-provider.iml" filepath="$PROJECT_DIR$/diary-database-provider/diary-database-provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diary-eureka/diary-eureka.iml" filepath="$PROJECT_DIR$/diary-eureka/diary-eureka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diary-member-manager/diary-member-manager.iml" filepath="$PROJECT_DIR$/diary-member-manager/diary-member-manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diary-parent.iml" filepath="$PROJECT_DIR$/diary-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diary-photo-manager/diary-photo-manager.iml" filepath="$PROJECT_DIR$/diary-photo-manager/diary-photo-manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diary-redis-provider/diary-redis-provider.iml" filepath="$PROJECT_DIR$/diary-redis-provider/diary-redis-provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diary-web/diary-web.iml" filepath="$PROJECT_DIR$/diary-web/diary-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/manager-diary/manager-diary.iml" filepath="$PROJECT_DIR$/manager-diary/manager-diary.iml" />
+    </modules>
+  </component>
+</project>
