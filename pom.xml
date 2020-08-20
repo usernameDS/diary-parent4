@@ -17,6 +17,7 @@
     <module>diary-photo-manager</module>
     <module>diary-redis-provider</module>
     <module>diary-web</module>
+    <module>manager-diary</module>
 
 <!--    <module>mybatis-generator</module>-->
   </modules>
