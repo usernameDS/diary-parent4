@@ -1,6 +1,7 @@
 package com.kmu.manager.controller;
 
 
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
@@ -147,7 +148,7 @@ public class ManagerController {
         return "redirect:/login.html";
     }
 
-    @GetMapping("/indexTwo.html")
+    @GetMapping("/index.html")
     public String main(HttpSession session) {
         //从session中，将用户信息取出来，再放到modal中，转发到indexTwo.html，indexTwo.html就可以取到用户信息
         SecurityContextImpl spring_security_context = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
