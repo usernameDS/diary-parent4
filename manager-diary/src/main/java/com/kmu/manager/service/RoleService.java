@@ -2,16 +2,17 @@ package com.kmu.manager.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.kmu.manager.entity.Notice;
+import com.kmu.manager.entity.Role;
 
 /**
  * <p>
  *  服务类
  * </p>
  *
- * @author ${author}
- * @since 2020-08-20
+ * @author Deng
+ * @since 2020-07-25
  */
-public interface NoticeService extends IService<Notice> {
+public interface RoleService extends IService<Role> {
+
 
 }

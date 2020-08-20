@@ -1,6 +1,5 @@
 package com.kmu.manager.service;
 
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.kmu.manager.entity.Manager;
@@ -9,12 +8,7 @@ import com.kmu.manager.util.ResultEntity;
 import java.util.List;
 
 /**
- * <p>
- *  服务类
- * </p>
- *
- * @author ${author}
- * @since 2020-08-17
+ * @作者：Deng 时间：2020/8/18 21:32
  */
 public interface ManagerService extends IService<Manager> {
 
@@ -25,4 +19,6 @@ public interface ManagerService extends IService<Manager> {
     Manager findManagerById(String id);
 
     boolean deleteByIds(List<String> strings);
+
+
 }

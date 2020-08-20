@@ -9,24 +9,21 @@ import com.kmu.manager.mapper.ManagerMapper;
 import com.kmu.manager.service.ManagerService;
 import com.kmu.manager.util.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 /**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author ${author}
- * @since 2020-08-17
+ * @作者：Deng 时间：2020/8/18 21:32
  */
 @Service
 public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> implements ManagerService {
-
     @Autowired
     ManagerMapper managerMapper;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public Page<Manager> selectManagers(String account, Integer pageNum, Integer pageSize) {
@@ -58,6 +55,11 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
 //            return ResultEntity.failedWithData("该账号已注册!请重试",false);
             return ResultEntity.failed();
         }
+        //插入
+        String password = manager.getPassword();
+        //加密
+        String encode = passwordEncoder.encode(password);
+        manager.setPassword(encode);
         //保存
         int insert = managerMapper.insert(manager);
         if(insert>0){

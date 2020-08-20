@@ -10,10 +10,19 @@
         <result column="m_create_date" property="createDate" />
         <result column="m_name" property="name" />
         <result column="m_email" property="email" />
-        <result column="m_head_pic" property="headPic" />
-        <result column="m_age" property="age" />
-        <result column="m_gender" property="gender" />
-        <result column="m_phone" property="phone" />
     </resultMap>
+
+    <select id ="selectMapsPage" resultMap="BaseResultMap">
+        select * from t_manager
+        <if test="#{likeName!=null}">
+            where m_name like  #{likeName}
+        </if>
+        LIMIT #{begin},#{size}
+    </select>
+    <select id="countManager" resultType="Long">
+        select count(*) from t_manager
+        <if test="#{likeName!=null}">
+            where m_name like #{likeName}        </if>
+    </select>
 
 </mapper>
