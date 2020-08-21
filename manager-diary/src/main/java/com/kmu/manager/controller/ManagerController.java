@@ -142,7 +142,7 @@ public class ManagerController {
         }
         return "login";
     }
-    @GetMapping("/logout.do")
+    @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login.html";
@@ -150,12 +150,12 @@ public class ManagerController {
 
     @GetMapping("/index.html")
     public String main(HttpSession session) {
-        //从session中，将用户信息取出来，再放到modal中，转发到indexTwo.html，indexTwo.html就可以取到用户信息
+        //从session中，将用户信息取出来，再放到modal中，转发到index.html，index.html就可以取到用户信息
         SecurityContextImpl spring_security_context = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
         UserDetails userDetails = (UserDetails) spring_security_context.getAuthentication().getPrincipal();
         String username = userDetails.getUsername();
         session.setAttribute("account", username);
-        return "indexTwo";
+        return "index";
     }
 
     //注入验证码生产者

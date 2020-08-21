@@ -130,8 +130,9 @@
                 <div class="main_login">
                     <p></p><!--获取时间的标签-->
                     <div class="main_login_Img">
-                        <span>注销</span>
-                        <span class="iconfont icon-iconfontmall01" th:href="@{/logout}"></span>
+                        <a th:href="@{/logout}"><i class="glyphicon glyphicon-off"></i> 注销</a>
+<!--                        <span>注销</span>-->
+<!--                        <span class="iconfont icon-iconfontmall01" th:href="@{/logout}"></span>-->
                     </div>
                 </div>
             </div>
@@ -141,7 +142,11 @@
             </li>
         </ul>
     </div>
-    <iframe src="main.html" frameborder="0" name="kindergarten" id="main_Iframe"></iframe>
+    <a th:src="main.html"></a>
+    <iframe src="main.html" frameborder="0" name="kindergarten" align="right"scrolling="no" id="main_Iframe">
+
+
+    </iframe>
 </header>
 <script th:src="@{/js/DATE_index.js}"></script>
 <script th:src="@{/lib/bootstrap-3.3.5-dist/js/jquery-1.11.3.js}"></script>
@@ -227,7 +232,7 @@
 <!--                    <li><a href="teacher.html" target="kindergarten"><span class="iconfont icon-bianji"></span><span>职工管理</span></a></li>-->
 <!--                    <li><a href="erjieduan.html" target="kindergarten"><span class="iconfont icon-bianji"></span><span>班级管理</span></a></li>-->
                     <li><a href="stuInfor.html" target="kindergarten"><span class="iconfont icon-bianji"></span><span>用户列表</span></a></li>
-                    `)
+               `)
 
 
             }

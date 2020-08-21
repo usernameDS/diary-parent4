@@ -83,6 +83,14 @@
 <script th:src="@{/js/DATE_index.js}"></script>
 <script th:src="@{/js/three.js}"></script>
 <script>
+    $(function(){
+        //为refresh绑定点击事件，刷新图片
+        $("#refresh").click(function(){
+            $("#codeImg").attr("src","[[@{/kaptcha}]]");
+        });
+    })
+</script>
+<script>
 
     sessionStorage.setItem("grade_info", JSON.stringify(Grade));
     sessionStorage.setItem("duty_info", JSON.stringify(student));    //考勤管理
